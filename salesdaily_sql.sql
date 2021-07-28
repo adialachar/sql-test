@@ -1,16 +1,10 @@
-SELECT
-  "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."DATUM" AS "DATUM",
-  "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."M01AB" AS "M01AB",
-  "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."M01AE" AS "M01AE",
-  "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."N02BA" AS "N02BA",
-  "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."N02BE" AS "N02BE",
-  "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."N05B" AS "N05B",
-  "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."N05C" AS "N05C",
-  "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."R03" AS "R03",
-  "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."R06" AS "R06",
-  "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."YEAR" AS "YEAR",
-  "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."MONTH" AS "MONTH",
-  "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."HOUR" AS "HOUR",
-  "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."WEEKDAY_NAME" AS "WEEKDAY_NAME"
-FROM
-  "snowflake"."SCHEMA_INFO"."SALESDAILY_S"
+WITH crime_and_region AS
+  (SELECT "mysql"."promethium"."US_REGIONS"."US_STATE" AS "State Code",
+          "mysql"."promethium"."COMBINED_CRIME_INCIDENTS"."COMBINED_CRIME_INCIDENTS" AS "COMBINED_CRIME_INCIDENTS"
+   FROM "mysql"."promethium"."COMBINED_CRIME_INCIDENTS"
+   LEFT OUTER JOIN "mysql"."promethium"."US_REGIONS" ON ("mysql"."promethium"."COMBINED_CRIME_INCIDENTS"."REGION_CODE" = "mysql"."promethium"."US_REGIONS"."REGION_CODE"))
+SELECT "State Code",
+       SUM(COMBINED_CRIME_INCIDENTS) as "Total Crimes"
+FROM crime_and_region
+GROUP BY "State Code"
+LIMIT 100
