@@ -1,30 +1,19 @@
-SELECT "Menu Item",
-       "City",
-       "State",
-       "Franchisee Group",
-       "Franchisee Parent",
-       sum("seat_cnt") AS "Total Seats",
-       sum("AMOUNT") AS "Revenue"
-FROM
-  ( SELECT "Menu Items"."NAME" AS "Menu Item",
-           "Menu Items"."AMOUNT" AS "AMOUNT",
-           "mysql"."promethium"."restaurant_orders"."created_dt" AS "created_dt",
-           "mysql"."promethium"."restaurant_orders"."rest_nm" AS "rest_nm",
-           "mysql"."promethium"."restaurant_orders"."city_nm" AS "City",
-           "mysql"."promethium"."restaurant_orders"."state_nm" AS "State",
-           "mysql"."promethium"."restaurant_orders"."country_nm" AS "country_nm",
-           "mysql"."promethium"."restaurant_orders"."postal_cd" AS "postal_cd",
-           "mysql"."promethium"."restaurant_orders"."franchisee_grp_no" AS "franchisee_grp_no",
-           "mysql"."promethium"."restaurant_orders"."franchisee_grp_nm" AS "Franchisee Group",
-           "mysql"."promethium"."restaurant_orders"."seat_cnt" AS "seat_cnt",
-           "mysql"."promethium"."restaurant_orders"."royalty_pct" AS "royalty_pct",
-           "mysql"."promethium"."restaurant_orders"."fran_rollup_nm" AS "Franchisee Parent",
-           "mysql"."promethium"."restaurant_orders"."home_dlvry" AS "home_dlvry"
-   FROM "oracle"."RDSORACLEFORPRESTO"."TLOG_PRODUCT_PLUNAMES" as "Menu Items"
-   LEFT OUTER JOIN "mysql"."promethium"."restaurant_orders" ON ( "Menu Items"."REST_KEY" = "mysql"."promethium"."restaurant_orders"."rest_key" ) )
-GROUP BY "Menu Item",
-         "city",
-         "State",
-         "Franchisee Group",
-         "Franchisee Parent"
+WITH PHARMA_SALES_DATA AS
+  (SELECT "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."DATUM" AS "DATUM",
+          "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."M01AB" AS "M01AB",
+          "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."M01AE" AS "M01AE",
+          "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."N02BA" AS "N02BA",
+          "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."N02BE" AS "N02BE",
+          "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."N05B" AS "N05B",
+          "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."N05C" AS "N05C",
+          "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."R03" AS "R03",
+          "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."R06" AS "R06",
+          "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."YEAR" AS "YEAR",
+          "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."MONTH" AS "MONTH",
+          "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."HOUR" AS "HOUR",
+          "snowflake"."SCHEMA_INFO"."SALESDAILY_S"."WEEKDAY_NAME" AS "WEEKDAY_NAME"
+   FROM "snowflake"."SCHEMA_INFO"."SALESDAILY_S")
+SELECT (PHARMA_SALES_DATA."DATUM") AS "DATE",
+       (PHARMA_SALES_DATA."M01AB") AS "Acetic Acid Derivatives"
+FROM PHARMA_SALES_DATA
 LIMIT 100
